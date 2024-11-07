@@ -226,7 +226,7 @@ uninstall() {
     rm /etc/systemd/system/x-ui2.service2 -f
     systemctl daemon-reload
     systemctl reset-failed
-    rm /etc/x-ui/ -rf
+    rm /etc/x-ui2/ -rf
     rm /usr/local/x-ui2/ -rf
 
     echo ""

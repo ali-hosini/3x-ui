@@ -177,7 +177,7 @@ systemctl restart x-ui
    ```sh
    docker run -itd \
       -e XRAY_VMESS_AEAD_FORCED=false \
-      -v $PWD/db/:/etc/x-ui/ \
+      -v $PWD/db/:/etc/x-ui2/ \
       -v $PWD/cert/:/root/cert/ \
       --network=host \
       --restart=unless-stopped \
@@ -329,7 +329,7 @@ location /sub {
 Вы можете удобно выполнять резервное копирование и восстановление базы данных прямо из панели.
 
 - **Путь к базе данных:**
-  - `/etc/x-ui/x-ui.db`
+  - `/etc/x-ui2/x-ui.db`
 
 ### Webbasepath
 

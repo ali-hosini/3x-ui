@@ -178,7 +178,7 @@ systemctl restart x-ui
    ```sh
    docker run -itd \
       -e XRAY_VMESS_AEAD_FORCED=false \
-      -v $PWD/db/:/etc/x-ui/ \
+      -v $PWD/db/:/etc/x-ui2/ \
       -v $PWD/cert/:/root/cert/ \
       --network=host \
       --restart=unless-stopped \
@@ -333,7 +333,7 @@ If you choose not to modify these settings, they will be generated randomly (thi
   You can conveniently perform database Backups and Restores directly from the panel.
 
 - **Database Path:**
-  - `/etc/x-ui/x-ui.db`
+  - `/etc/x-ui2/x-ui.db`
 
 
 ### Web Base Path

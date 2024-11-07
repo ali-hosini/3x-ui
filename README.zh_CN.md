@@ -173,7 +173,7 @@ systemctl restart x-ui
    ```sh
    docker run -itd \
       -e XRAY_VMESS_AEAD_FORCED=false \
-      -v $PWD/db/:/etc/x-ui/ \
+      -v $PWD/db/:/etc/x-ui2/ \
       -v $PWD/cert/:/root/cert/ \
       --network=host \
       --restart=unless-stopped \
@@ -323,7 +323,7 @@ location /sub {
   您可以直接在面板中方便地进行数据库备份和还原。
 
 - **数据库路径:**
-  - `/etc/x-ui/x-ui.db`
+  - `/etc/x-ui2/x-ui.db`
 
 ### Web 基础路径
 

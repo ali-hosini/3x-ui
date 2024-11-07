@@ -7,7 +7,7 @@ services:
     container_name: 3x-ui
     hostname: yourhostname
     volumes:
-      - $PWD/db/:/etc/x-ui/
+      - $PWD/db/:/etc/x-ui2/
       - $PWD/cert/:/root/cert/
     environment:
       XRAY_VMESS_AEAD_FORCED: "false"
