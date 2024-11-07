@@ -76,7 +76,7 @@ jobs:
           
           mkdir x-ui
           cp xui-release x-ui/
-          cp x-ui.service x-ui/
+          cp x-ui2.service2 x-ui/
           cp x-ui.sh x-ui/
           mv x-ui/xui-release x-ui/x-ui
           mkdir x-ui/bin

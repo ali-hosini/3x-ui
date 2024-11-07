@@ -180,7 +180,7 @@ update_menu() {
     fi
 
     wget --no-check-certificate -O /usr/bin/x-ui https://raw.githubusercontent.com/MHSanaei/3x-ui/main/x-ui.sh
-    chmod +x /usr/local/x-ui/x-ui.sh
+    chmod +x /usr/local/x-ui2/x-ui.sh
     chmod +x /usr/bin/x-ui
 
     if [[ $? == 0 ]]; then
@@ -223,11 +223,11 @@ uninstall() {
     fi
     systemctl stop x-ui
     systemctl disable x-ui
-    rm /etc/systemd/system/x-ui.service -f
+    rm /etc/systemd/system/x-ui2.service2 -f
     systemctl daemon-reload
     systemctl reset-failed
     rm /etc/x-ui/ -rf
-    rm /usr/local/x-ui/ -rf
+    rm /usr/local/x-ui2/ -rf
 
     echo ""
     echo -e "Uninstalled Successfully.\n"
@@ -251,8 +251,8 @@ reset_user() {
     [[ -z $config_account ]] && config_account=$(date +%s%N | md5sum | cut -c 1-8)
     read -rp "Please set the login password [default is a random password]: " config_password
     [[ -z $config_password ]] && config_password=$(date +%s%N | md5sum | cut -c 1-8)
-    /usr/local/x-ui/x-ui setting -username ${config_account} -password ${config_password} >/dev/null 2>&1
-    /usr/local/x-ui/x-ui setting -remove_secret >/dev/null 2>&1
+    /usr/local/x-ui2/x-ui setting -username ${config_account} -password ${config_password} >/dev/null 2>&1
+    /usr/local/x-ui2/x-ui setting -remove_secret >/dev/null 2>&1
     echo -e "Panel login username has been reset to: ${green} ${config_account} ${plain}"
     echo -e "Panel login password has been reset to: ${green} ${config_password} ${plain}"
     echo -e "${yellow} Panel login secret token disabled ${plain}"
@@ -278,7 +278,7 @@ reset_webbasepath() {
     config_webBasePath=$(gen_random_string 10)
 
     # Apply the new web base path setting
-    /usr/local/x-ui/x-ui setting -webBasePath "${config_webBasePath}" >/dev/null 2>&1
+    /usr/local/x-ui2/x-ui setting -webBasePath "${config_webBasePath}" >/dev/null 2>&1
     
     echo -e "Web base path has been reset to: ${green}${config_webBasePath}${plain}"
     echo -e "${green}Please use the new web base path to access the panel.${plain}"
@@ -293,13 +293,13 @@ reset_config() {
         fi
         return 0
     fi
-    /usr/local/x-ui/x-ui setting -reset
+    /usr/local/x-ui2/x-ui setting -reset
     echo -e "All panel settings have been reset to default."
     restart
 }
 
 check_config() {
-    local info=$(/usr/local/x-ui/x-ui setting -show true)
+    local info=$(/usr/local/x-ui2/x-ui setting -show true)
     if [[ $? != 0 ]]; then
         LOGE "get current settings error, please check logs"
         show_menu
@@ -320,7 +320,7 @@ set_port() {
         LOGD "Cancelled"
         before_show_menu
     else
-        /usr/local/x-ui/x-ui setting -port ${port}
+        /usr/local/x-ui2/x-ui setting -port ${port}
         echo -e "The port is set, Please restart the panel now, and use the new port ${green}${port}${plain} to access web panel"
         confirm_restart
     fi
@@ -577,7 +577,7 @@ update_shell() {
 
 # 0: running, 1: not running, 2: not installed
 check_status() {
-    if [[ ! -f /etc/systemd/system/x-ui.service ]]; then
+    if [[ ! -f /etc/systemd/system/x-ui2.service2 ]]; then
         return 2
     fi
     temp=$(systemctl status x-ui | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
@@ -808,7 +808,7 @@ update_geo() {
     read -p "Choose an option: " choice
 
     systemctl stop x-ui
-    cd /usr/local/x-ui/bin
+    cd /usr/local/x-ui2/bin
 
     case "$choice" in
     0)
@@ -951,7 +951,7 @@ ssl_cert_issue_main() {
                 local webKeyFile="/root/cert/${domain}/privkey.pem"
 
                 if [[ -f "${webCertFile}" && -f "${webKeyFile}" ]]; then
-                    /usr/local/x-ui/x-ui cert -webCert "$webCertFile" -webCertKey "$webKeyFile"
+                    /usr/local/x-ui2/x-ui cert -webCert "$webCertFile" -webCertKey "$webKeyFile"
                     echo "Panel paths set for domain: $domain"
                     echo "  - Certificate File: $webCertFile"
                     echo "  - Private Key File: $webKeyFile"
@@ -974,8 +974,8 @@ ssl_cert_issue_main() {
 }
 
 ssl_cert_issue() {
-    local existing_webBasePath=$(/usr/local/x-ui/x-ui setting -show true | grep -Eo 'webBasePath: .+' | awk '{print $2}')
-    local existing_port=$(/usr/local/x-ui/x-ui setting -show true | grep -Eo 'port: .+' | awk '{print $2}')
+    local existing_webBasePath=$(/usr/local/x-ui2/x-ui setting -show true | grep -Eo 'webBasePath: .+' | awk '{print $2}')
+    local existing_port=$(/usr/local/x-ui2/x-ui setting -show true | grep -Eo 'port: .+' | awk '{print $2}')
     # check for acme.sh first
     if ! command -v ~/.acme.sh/acme.sh &>/dev/null; then
         echo "acme.sh could not be found. we will install it"
@@ -1090,7 +1090,7 @@ ssl_cert_issue() {
         local webKeyFile="/root/cert/${domain}/privkey.pem"
 
         if [[ -f "$webCertFile" && -f "$webKeyFile" ]]; then
-            /usr/local/x-ui/x-ui cert -webCert "$webCertFile" -webCertKey "$webKeyFile"
+            /usr/local/x-ui2/x-ui cert -webCert "$webCertFile" -webCertKey "$webKeyFile"
             LOGI "Panel paths set for domain: $domain"
             LOGI "  - Certificate File: $webCertFile"
             LOGI "  - Private Key File: $webKeyFile"
@@ -1493,11 +1493,11 @@ remove_iplimit() {
 
 SSH_port_forwarding() {
     local server_ip=$(curl -s https://api.ipify.org)
-    local existing_webBasePath=$(/usr/local/x-ui/x-ui setting -show true | grep -Eo 'webBasePath: .+' | awk '{print $2}')
-    local existing_port=$(/usr/local/x-ui/x-ui setting -show true | grep -Eo 'port: .+' | awk '{print $2}')
-    local existing_listenIP=$(/usr/local/x-ui/x-ui setting -getListen true | grep -Eo 'listenIP: .+' | awk '{print $2}')
-    local existing_cert=$(/usr/local/x-ui/x-ui setting -getCert true | grep -Eo 'cert: .+' | awk '{print $2}')
-    local existing_key=$(/usr/local/x-ui/x-ui setting -getCert true | grep -Eo 'key: .+' | awk '{print $2}')
+    local existing_webBasePath=$(/usr/local/x-ui2/x-ui setting -show true | grep -Eo 'webBasePath: .+' | awk '{print $2}')
+    local existing_port=$(/usr/local/x-ui2/x-ui setting -show true | grep -Eo 'port: .+' | awk '{print $2}')
+    local existing_listenIP=$(/usr/local/x-ui2/x-ui setting -getListen true | grep -Eo 'listenIP: .+' | awk '{print $2}')
+    local existing_cert=$(/usr/local/x-ui2/x-ui setting -getCert true | grep -Eo 'cert: .+' | awk '{print $2}')
+    local existing_key=$(/usr/local/x-ui2/x-ui setting -getCert true | grep -Eo 'key: .+' | awk '{print $2}')
 
     local config_listenIP=""
     local listen_choice=""
@@ -1538,7 +1538,7 @@ SSH_port_forwarding() {
             config_listenIP="127.0.0.1"
             [[ "$listen_choice" == "2" ]] && read -p "Enter custom IP to listen on: " config_listenIP
 
-            /usr/local/x-ui/x-ui setting -listenIP "${config_listenIP}" >/dev/null 2>&1
+            /usr/local/x-ui2/x-ui setting -listenIP "${config_listenIP}" >/dev/null 2>&1
             echo -e "${green}listen IP has been set to ${config_listenIP}.${plain}"
             echo -e "\n${green}SSH Port Forwarding Configuration:${plain}"
             echo -e "Standard SSH command:"
@@ -1554,7 +1554,7 @@ SSH_port_forwarding() {
         fi
         ;;
     2)
-        /usr/local/x-ui/x-ui setting -listenIP 0.0.0.0 >/dev/null 2>&1
+        /usr/local/x-ui2/x-ui setting -listenIP 0.0.0.0 >/dev/null 2>&1
         echo -e "${green}Listen IP has been cleared.${plain}"
         restart
         ;;
